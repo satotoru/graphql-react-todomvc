@@ -1,11 +1,9 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
-import '../App.css'
 import { graphql } from '../gql'
 import request from 'graphql-request'
 import { useQuery } from '@tanstack/react-query'
+import { Box, Button, Link as ChakraLink, Code, Heading, ListItem, Text, UnorderedList } from '@chakra-ui/react'
 
 export const Route = createLazyFileRoute('/')({
   component: App
@@ -23,7 +21,7 @@ function App() {
     queryKey: ['testField'],
     queryFn: async () => {
       const { testField } = await request({
-        url: 'http://localhost:5000/graphql',
+        url: import.meta.env.GRAPHQL_ENDPOINT,
         document: testFieldDocument
       })
       return testField
@@ -32,26 +30,21 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR {data}
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Heading as={'h1'}>GraphQL React ToDoMVC</Heading>
+      <Box mt={8}>
+        <Button onClick={() => setCount(count+1)}>Count is {count}</Button>
+        <Text>graphql testField: <Code ml={2}>{data}</Code></Text>
+      </Box>
+      <Box mt={4}>
+        <UnorderedList>
+          <ListItem>
+            <ChakraLink as={Link} to="/">Home</ChakraLink>
+          </ListItem>
+          <ListItem>
+            <ChakraLink as={Link} to="/">Home</ChakraLink>
+          </ListItem>
+        </UnorderedList>
+      </Box>
     </>
   )
 }

@@ -21,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ChakraProvider>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
 
     </ChakraProvider>

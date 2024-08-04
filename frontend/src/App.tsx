@@ -2,9 +2,28 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { graphql } from './gql'
+import request from 'graphql-request'
+import { useQuery } from '@tanstack/react-query'
+
+const testFieldDocument = graphql(`
+  query TestField {
+    testField
+    }
+  `)
 
 function App() {
   const [count, setCount] = useState(0)
+  const { data } = useQuery({
+    queryKey: ['testField'],
+    queryFn: async () => {
+      const { testField } = await request({
+        url: 'http://localhost:5000/graphql',
+        document: testFieldDocument
+      })
+      return testField
+    },
+  })
 
   return (
     <>
@@ -22,7 +41,7 @@ function App() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          Edit <code>src/App.tsx</code> and save to test HMR {data}
         </p>
       </div>
       <p className="read-the-docs">

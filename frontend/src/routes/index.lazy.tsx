@@ -1,10 +1,15 @@
+import { createLazyFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
-import { graphql } from './gql'
+import '../App.css'
+import { graphql } from '../gql'
 import request from 'graphql-request'
 import { useQuery } from '@tanstack/react-query'
+
+export const Route = createLazyFileRoute('/')({
+  component: App
+})
 
 const testFieldDocument = graphql(`
   query TestField {
@@ -18,7 +23,7 @@ function App() {
     queryKey: ['testField'],
     queryFn: async () => {
       const { testField } = await request({
-        url: import.meta.env.GRAPHQL_ENDPOINT,
+        url: 'http://localhost:5000/graphql',
         document: testFieldDocument
       })
       return testField
@@ -50,5 +55,3 @@ function App() {
     </>
   )
 }
-
-export default App

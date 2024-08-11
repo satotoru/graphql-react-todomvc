@@ -18,7 +18,7 @@ export const Route = createRootRoute({
     <>
       <Header />
       <hr />
-      <Box margin={5}>
+      <Box p={4} bg={"gray.300"}>
         <Outlet />
       </Box>
       <TanStackRouterDevtools />

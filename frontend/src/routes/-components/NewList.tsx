@@ -33,7 +33,7 @@ export function NewList() {
       <CardBody>
         <form onSubmit={handleSubmit(onSubmit)}>
           <HStack>
-            <Input type="text" placeholder="New List" {...register("name", { required: true })} />
+            <Input bg={"white"} type="text" placeholder="New List" {...register("name", { required: true })} />
             {errors.name && <Text size={"xs"} color={'red'}>This field is required</Text>}
             <Button type="submit">Add</Button>
           </HStack>

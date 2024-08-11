@@ -3,7 +3,7 @@ import { getKey, queryClient, useGraphqlMutation } from '../-hooks/useGraphqlQue
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import { CreateCardDocument, DeleteCardDocument, DeleteListDocument, ListsDocument, ListsQuery } from '../../gql/graphql'
 import { graphql } from '../../gql'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
 
 graphql(`
@@ -45,7 +45,7 @@ function NewCard(props: NewCardProps) {
       queryClient.invalidateQueries({ queryKey: [getKey(ListsDocument)] })
     }
   })
-  const { register, handleSubmit, reset, } = useForm<CreateCardInputs>();
+  const { register, handleSubmit, reset, setFocus } = useForm<CreateCardInputs>();
   const onSubmit: SubmitHandler<CreateCardInputs> = (data) => {
     createCardMutation.mutate({ ...data, listId: props.listId })
   }
@@ -53,6 +53,12 @@ function NewCard(props: NewCardProps) {
     reset()
     setNewCard(false)
   }
+
+  useEffect(() => {
+    if (newCard) {
+      setFocus('name')
+    }
+  }, [newCard, setFocus])
 
 
   return (
@@ -64,7 +70,12 @@ function NewCard(props: NewCardProps) {
               size="sm"
               type="text"
               placeholder="New Card"
-              {...register("name", { required: true })}
+              {...register("name", {
+                required: true, onBlur: () => {
+                  setNewCard(false)
+                  reset()
+                }
+              })}
             />
           </form>
         ) : (

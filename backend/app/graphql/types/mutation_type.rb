@@ -2,6 +2,8 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :delete_card, mutation: Mutations::DeleteCard
+    field :create_card, mutation: Mutations::CreateCard
     field :delete_list, mutation: Mutations::DeleteList
     field :create_list, mutation: Mutations::CreateList
     # TODO: remove me

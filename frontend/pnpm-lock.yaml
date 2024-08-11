@@ -45,6 +45,9 @@ importers:
       '@graphql-codegen/cli':
         specifier: ^5.0.2
         version: 5.0.2(@types/node@22.1.0)(graphql@16.9.0)(typescript@5.5.4)
+      '@graphql-codegen/client-preset':
+        specifier: ^4.3.3
+        version: 4.3.3(graphql@16.9.0)
       '@tanstack/eslint-plugin-query':
         specifier: ^5.51.15
         version: 5.51.15(eslint@8.57.0)(typescript@5.5.4)

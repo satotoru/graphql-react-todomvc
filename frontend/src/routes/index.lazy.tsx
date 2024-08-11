@@ -1,11 +1,8 @@
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { graphql } from '../gql'
-import request from 'graphql-request'
-import { useQuery } from '@tanstack/react-query'
 import { Box, Button, Link as ChakraLink, Code, Heading, ListItem, Text, UnorderedList } from '@chakra-ui/react'
 import { useGraphqlQuery } from './-hooks/useGraphqlQuery'
-import { TestFieldQuery, TestFieldQueryVariables } from '../gql/graphql'
 
 export const Route = createLazyFileRoute('/')({
   component: App

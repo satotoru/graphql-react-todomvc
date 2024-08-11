@@ -27,5 +27,11 @@ module Types
     def test_field
       "Hello World!"
     end
+
+    field :lists, [ListType], null: false
+
+    def lists
+      List.all
+    end
   end
 end

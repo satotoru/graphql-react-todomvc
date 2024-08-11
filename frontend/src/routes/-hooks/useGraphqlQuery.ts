@@ -1,16 +1,19 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, UseMutationOptions, useQuery } from "@tanstack/react-query";
 import { DirectiveDefinitionNode } from "graphql";
 import request from "graphql-request";
 
-export function getKey<TData = unknown, TVariabels = unknown>(
-  document: TypedDocumentNode<TData, TVariabels>
+export const queryClient = new QueryClient()
+
+export function getKey<TData = unknown, TVariables = unknown>(
+  document: TypedDocumentNode<TData, TVariables>
 ) {
-  return (document.definitions[0] as DirectiveDefinitionNode)?.name?.value;
+  return [(document.definitions[0] as DirectiveDefinitionNode)?.name?.value][0];
 }
 
-export function useGraphqlQuery<TData = unknown, TVariabels = unknown>(
-  document: TypedDocumentNode<TData, TVariabels>
+export function useGraphqlQuery<TData = unknown, TVariables = unknown>(
+  document: TypedDocumentNode<TData, TVariables>,
+  variables?: TVariables
 ) {
   return useQuery({
     queryKey: [getKey(document)],
@@ -18,6 +21,24 @@ export function useGraphqlQuery<TData = unknown, TVariabels = unknown>(
       return request({
         url: import.meta.env.VITE_GRAPHQL_ENDPOINT,
         document,
+        ...(variables && variables),
+      });
+    },
+  });
+}
+
+export function useGraphqlMutation<TData = unknown, TVariables = unknown>(
+  document: TypedDocumentNode<TData, TVariables>,
+  options?: UseMutationOptions<TData, unknown, TVariables>
+) {
+  return useMutation({
+    ...options,
+    mutationKey: [getKey(document)],
+    mutationFn: (variables?: TVariables) => {
+      return request({
+        url: import.meta.env.VITE_GRAPHQL_ENDPOINT,
+        document,
+        ...(variables && { variables }),
       });
     },
   });

@@ -13,7 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query TestField {\n    testField\n    }\n  ": types.TestFieldDocument,
+    "\n  query Lists {\n    lists {\n      id\n      name\n      createdAt\n      updatedAt\n    }\n  }\n": types.ListsDocument,
+    "\n  mutation CreateList($name: String!) {\n    createList(input: { name: $name }) {\n      success\n    }\n  }\n": types.CreateListDocument,
+    "\n  mutation DeleteList($id: ID!) {\n    deleteList(input: { id: $id }) {\n      success\n    }\n  }\n": types.DeleteListDocument,
 };
 
 /**
@@ -33,7 +35,15 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query TestField {\n    testField\n    }\n  "): (typeof documents)["\n  query TestField {\n    testField\n    }\n  "];
+export function graphql(source: "\n  query Lists {\n    lists {\n      id\n      name\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Lists {\n    lists {\n      id\n      name\n      createdAt\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateList($name: String!) {\n    createList(input: { name: $name }) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation CreateList($name: String!) {\n    createList(input: { name: $name }) {\n      success\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteList($id: ID!) {\n    deleteList(input: { id: $id }) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteList($id: ID!) {\n    deleteList(input: { id: $id }) {\n      success\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -7,8 +7,6 @@ class Card < ApplicationRecord
 
   validates :name, presence: true
 
-  scope :ordered, -> { joins(:list_card_order).order("list_card_orders.value ASC") }
-
   private
 
   def set_default_order
@@ -21,6 +19,6 @@ class Card < ApplicationRecord
   end
 
   def reorder_cards
-    list.reorder_cards!(list.cards.ordered.pluck(:id))
+    list.reorder_cards!(list.ordered_cards.pluck(:id))
   end
 end

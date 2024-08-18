@@ -16,7 +16,7 @@ const documents = {
     "\n  mutation DeleteList($id: ID!) {\n    deleteList(input: { id: $id }) {\n      success\n    }\n  }\n": types.DeleteListDocument,
     "\n  mutation CreateCard($name: String!, $listId: ID!) {\n    createCard(input: { name: $name, listId: $listId }) {\n      success\n    }\n  }\n": types.CreateCardDocument,
     "\n  mutation DeleteCard($id: ID!) {\n    deleteCard(input: { id: $id }) {\n      success\n    }\n  }\n": types.DeleteCardDocument,
-    "\n  mutation ReorderCards($listId: ID!, $cardIds: [ID!]!) {\n    reorderCards(input: { listId: $listId, cardIds: $cardIds }) {\n      success\n    }\n  }\n": types.ReorderCardsDocument,
+    "\n  mutation MoveCard($listId: ID!, $cardIdFrom: ID!, $cardIdTo: ID!) {\n    moveCard(input: { listId: $listId, cardIdFrom: $cardIdFrom, cardIdTo: $cardIdTo }) {\n      success\n    }\n  }\n": types.MoveCardDocument,
     "\n  mutation CreateList($name: String!) {\n    createList(input: { name: $name }) {\n      success\n    }\n  }\n": types.CreateListDocument,
     "\n  query Lists {\n    lists {\n      id\n      name\n      createdAt\n      updatedAt\n      cards {\n        id\n        name\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.ListsDocument,
 };
@@ -50,7 +50,7 @@ export function graphql(source: "\n  mutation DeleteCard($id: ID!) {\n    delete
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation ReorderCards($listId: ID!, $cardIds: [ID!]!) {\n    reorderCards(input: { listId: $listId, cardIds: $cardIds }) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation ReorderCards($listId: ID!, $cardIds: [ID!]!) {\n    reorderCards(input: { listId: $listId, cardIds: $cardIds }) {\n      success\n    }\n  }\n"];
+export function graphql(source: "\n  mutation MoveCard($listId: ID!, $cardIdFrom: ID!, $cardIdTo: ID!) {\n    moveCard(input: { listId: $listId, cardIdFrom: $cardIdFrom, cardIdTo: $cardIdTo }) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation MoveCard($listId: ID!, $cardIdFrom: ID!, $cardIdTo: ID!) {\n    moveCard(input: { listId: $listId, cardIdFrom: $cardIdFrom, cardIdTo: $cardIdTo }) {\n      success\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

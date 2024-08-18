@@ -1,7 +1,7 @@
 import { Card, CardBody, CardFooter, CardHeader, Divider, Heading, Text, Stack, IconButton, Input, Flex } from '@chakra-ui/react'
 import { getKey, queryClient, useGraphqlMutation } from '../-hooks/useGraphqlQuery'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
-import { CreateCardDocument, DeleteCardDocument, DeleteListDocument, ListsDocument, ListsQuery, ReorderCardsDocument } from '../../gql/graphql'
+import { CreateCardDocument, DeleteCardDocument, DeleteListDocument, ListsDocument, ListsQuery, MoveCardDocument } from '../../gql/graphql'
 import { graphql } from '../../gql'
 import { useEffect, useState } from 'react'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
@@ -34,8 +34,8 @@ graphql(`
 `)
 
 graphql(`
-  mutation ReorderCards($listId: ID!, $cardIds: [ID!]!) {
-    reorderCards(input: { listId: $listId, cardIds: $cardIds }) {
+  mutation MoveCard($listId: ID!, $cardIdFrom: ID!, $cardIdTo: ID!) {
+    moveCard(input: { listId: $listId, cardIdFrom: $cardIdFrom, cardIdTo: $cardIdTo }) {
       success
     }
   }
@@ -159,7 +159,7 @@ export function ListColumn(props: ListColumnProps) {
       queryClient.invalidateQueries({ queryKey: [getKey(ListsDocument)] })
     }
   })
-  const reorderCardsMutation = useGraphqlMutation(ReorderCardsDocument, {
+  const moveCardMutation = useGraphqlMutation(MoveCardDocument, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [getKey(ListsDocument)] })
     }
@@ -175,7 +175,7 @@ export function ListColumn(props: ListColumnProps) {
       const newIndex = cards.findIndex((card) => card.id === over.id)
       const newCards = arrayMove(cards, oldIndex, newIndex)
       setCards(newCards)
-      reorderCardsMutation.mutate({ listId: list.id, cardIds: newCards.map((card) => card.id) })
+      moveCardMutation.mutate({ listId: list.id, cardIdFrom: active.id as string, cardIdTo: over.id as string })
     }
   }
   const sensors = useSensors(

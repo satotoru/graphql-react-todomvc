@@ -2,7 +2,7 @@
 
 module Types
   class MutationType < Types::BaseObject
-    field :reorder_cards, mutation: Mutations::ReorderCards
+    field :move_card, mutation: Mutations::MoveCard
     field :delete_card, mutation: Mutations::DeleteCard
     field :create_card, mutation: Mutations::CreateCard
     field :delete_list, mutation: Mutations::DeleteList

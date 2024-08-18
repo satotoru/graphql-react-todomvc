@@ -9,7 +9,7 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
     def cards
-      object.cards.ordered
+      object.ordered_cards
     end
   end
 end

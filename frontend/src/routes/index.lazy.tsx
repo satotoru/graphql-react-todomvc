@@ -30,16 +30,16 @@ graphql(`
 function App() {
   const { data: listsData } = useGraphqlQuery(ListsDocument);
   return (
-    <>
+    <Stack spacing={4}>
       <Heading as={'h1'}>GraphQL React ToDoMVC</Heading>
       <NewList />
-      <Box mt={4}>
+      <Box>
         <Stack direction="row" shouldWrapChildren={true} spacing={4}>
           {listsData?.lists.map((list) => (
             <ListColumn key={list.id} list={list} />
           ))}
         </Stack>
       </Box>
-    </>
+    </Stack>
   )
 }

@@ -1,6 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Flex, Link as ChakraLink, Text, Box } from '@chakra-ui/react'
+import { Flex, Link as ChakraLink, Box } from '@chakra-ui/react'
 
 
 function Header() {
@@ -15,13 +15,15 @@ function Header() {
 
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <Header />
-      <hr />
-      <Box p={4} bg={"gray.300"}>
+    <Flex direction={"column"} align={"stretch"} h="100%">
+      <Box>
+        <Header />
+        <hr />
+      </Box>
+      <Box p={4} bg={"gray.300"} flexGrow={1}>
         <Outlet />
       </Box>
       <TanStackRouterDevtools />
-    </>
+    </Flex>
   ),
 })

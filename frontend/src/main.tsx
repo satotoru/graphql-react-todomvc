@@ -6,6 +6,7 @@ import { routeTree } from './routeTree.gen.ts'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from './routes/-hooks/useGraphqlQuery.ts'
+import theme from './theme.tsx'
 
 const router = createRouter({ routeTree })
 
@@ -17,7 +18,7 @@ declare module '@tanstack/react-router' {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} />

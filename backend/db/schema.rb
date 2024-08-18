@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_11_094648) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_18_093321) do
   create_table "cards", force: :cascade do |t|
     t.integer "list_id", null: false
     t.string "name", null: false
@@ -20,6 +20,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_11_094648) do
     t.index ["list_id"], name: "index_cards_on_list_id"
   end
 
+  create_table "list_card_orders", force: :cascade do |t|
+    t.integer "list_id", null: false
+    t.integer "card_id", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_list_card_orders_on_card_id"
+    t.index ["list_id", "card_id", "value"], name: "index_list_card_orders_on_list_id_and_card_id_and_value", unique: true
+    t.index ["list_id"], name: "index_list_card_orders_on_list_id"
+  end
+
   create_table "lists", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -27,4 +38,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_11_094648) do
   end
 
   add_foreign_key "cards", "lists"
+  add_foreign_key "list_card_orders", "cards"
+  add_foreign_key "list_card_orders", "lists"
 end

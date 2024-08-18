@@ -7,5 +7,9 @@ module Types
     field :cards, [Types::CardType], null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+
+    def cards
+      object.cards.ordered
+    end
   end
 end

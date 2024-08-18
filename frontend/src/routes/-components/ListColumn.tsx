@@ -1,10 +1,13 @@
 import { Card, CardBody, CardFooter, CardHeader, Divider, Heading, Text, Stack, IconButton, Input, Flex } from '@chakra-ui/react'
 import { getKey, queryClient, useGraphqlMutation } from '../-hooks/useGraphqlQuery'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
-import { CreateCardDocument, DeleteCardDocument, DeleteListDocument, ListsDocument, ListsQuery } from '../../gql/graphql'
+import { CreateCardDocument, DeleteCardDocument, DeleteListDocument, ListsDocument, ListsQuery, ReorderCardsDocument } from '../../gql/graphql'
 import { graphql } from '../../gql'
 import { useEffect, useState } from 'react'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
+import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 graphql(`
   mutation DeleteList($id: ID!) {
@@ -29,6 +32,15 @@ graphql(`
     }
   }
 `)
+
+graphql(`
+  mutation ReorderCards($listId: ID!, $cardIds: [ID!]!) {
+    reorderCards(input: { listId: $listId, cardIds: $cardIds }) {
+      success
+    }
+  }
+`)
+
 
 type CreateCardInputs = {
   name: string
@@ -116,17 +128,66 @@ function CardItem(props: CardItemProps) {
   )
 }
 
+function SortableItem(props: { id: string, children: React.ReactNode }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: props.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  }
+  return <div ref={setNodeRef} style={style} {...attributes} {...listeners}>{props.children}</div>
+}
 
 type ListColumnProps = {
   list: ListsQuery['lists'][number]
 }
 export function ListColumn(props: ListColumnProps) {
   const { list } = props
+  const [cards, setCards] = useState(list.cards)
+  useEffect(() => {
+    setCards(list.cards)
+  }, [list.cards])
+
   const deleteListMutation = useGraphqlMutation(DeleteListDocument, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [getKey(ListsDocument)] })
     }
   })
+  const reorderCardsMutation = useGraphqlMutation(ReorderCardsDocument, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [getKey(ListsDocument)] })
+    }
+  })
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (!over) {
+      return
+    }
+    if (active.id !== over.id) {
+      const oldIndex = cards.findIndex((card) => card.id === active.id)
+      const newIndex = cards.findIndex((card) => card.id === over.id)
+      const newCards = arrayMove(cards, oldIndex, newIndex)
+      setCards(newCards)
+      reorderCardsMutation.mutate({ listId: list.id, cardIds: newCards.map((card) => card.id) })
+    }
+  }
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5
+      }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  )
 
   return (
     <Card key={list.id} width={200}>
@@ -147,9 +208,19 @@ export function ListColumn(props: ListColumnProps) {
       <Divider />
       <CardBody p={2}>
         <Stack>
-          {list.cards.map((card) => (
-            <CardItem key={card.id} card={card} />
-          ))}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={cards} strategy={verticalListSortingStrategy}>
+              {cards.map((card) => (
+                <SortableItem key={card.id} id={card.id}>
+                  <CardItem card={card} />
+                </SortableItem>
+              ))}
+            </SortableContext>
+          </DndContext>
         </Stack>
       </CardBody>
       <CardFooter p={2}>
